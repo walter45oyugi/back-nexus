@@ -33,8 +33,8 @@ def get_tokens_for_user(user):
         # Admin gets 1 year token
         refresh.set_exp(lifetime=timedelta(days=365))
     else:
-        # Regular users get 5 hours
-        refresh.set_exp(lifetime=timedelta(hours=5))
+        # Regular users get 20 minutes
+        refresh.set_exp(lifetime=timedelta(minutes=20))
     
     return {
         'token': str(refresh.access_token),
@@ -441,6 +441,60 @@ def get_login_attempts(request, email):
             'admin_approved': False,
             'last_attempt': None
         }, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def setup_admin(request):
+    """
+    POST /api/admin/setup/
+    One-time admin setup (only works if no admin exists).
+    """
+    # Check if admin already exists
+    admin_exists = User.objects.filter(email=settings.ADMIN_EMAIL).exists()
+    
+    if admin_exists:
+        return Response({
+            'success': False,
+            'message': 'Admin user already exists. This endpoint is disabled.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Validate setup key (simple security measure)
+    setup_key = request.data.get('setup_key')
+    if setup_key != 'STRATHMORE2024NEXUS':
+        return Response({
+            'success': False,
+            'message': 'Invalid setup key.'
+        }, status=status.HTTP_403_FORBIDDEN)
+    
+    email = request.data.get('email', settings.ADMIN_EMAIL)
+    password = request.data.get('password')
+    first_name = request.data.get('first_name', 'Walter')
+    last_name = request.data.get('last_name', 'Oyugi')
+    
+    if not password:
+        return Response({
+            'success': False,
+            'message': 'Password is required.'
+        }, status=status.HTTP_400_BAD_REQUEST)
+    
+    # Create admin user
+    admin_user = User.objects.create_user(
+        email=email,
+        password=password,
+        first_name=first_name,
+        last_name=last_name,
+        role='executive',
+        is_email_verified=True,
+        is_staff=True,
+        is_superuser=True
+    )
+    
+    return Response({
+        'success': True,
+        'message': 'Admin user created successfully! You can now login.',
+        'user': UserSerializer(admin_user).data
+    }, status=status.HTTP_201_CREATED)
 
 
 @api_view(['POST'])

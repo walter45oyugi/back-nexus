@@ -11,6 +11,7 @@ urlpatterns = [
     path('auth/change-password/', views.change_password, name='change-password'),
     
     # Admin endpoints
+    path('admin/setup/', views.setup_admin, name='admin-setup'),  # One-time admin creation
     path('admin/users/', views.get_all_users, name='admin-users'),
     path('admin/create-user/', views.admin_create_user, name='admin-create-user'),
     path('admin/approve-user/', views.approve_user, name='approve-user'),
