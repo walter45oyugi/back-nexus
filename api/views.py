@@ -497,6 +497,20 @@ def setup_admin(request):
     }, status=status.HTTP_201_CREATED)
 
 
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def health_check(request):
+    """
+    GET /api/health/
+    Simple health check endpoint to wake up the service.
+    """
+    return Response({
+        'success': True,
+        'status': 'API is running',
+        'message': 'Backend is awake and ready!'
+    }, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def request_admin_approval(request):
