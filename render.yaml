@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: strathmore-auth-api
+    env: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn authentication.wsgi:application"
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: strathmore-db
+          property: connectionString
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com,localhost,127.0.0.1"
+      - key: DEBUG
+        value: "False"
+
+databases:
+  - name: strathmore-db
+    databaseName: strathmore_db
+    user: strathmore_user
+
