@@ -2,11 +2,12 @@ services:
   - type: web
     name: strathmore-auth-api
     env: python
+    runtime: python
     buildCommand: "./build.sh"
     startCommand: "gunicorn authentication.wsgi:application"
     envVars:
       - key: PYTHON_VERSION
-        value: 3.11.0
+        value: 3.11.9
       - key: SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
