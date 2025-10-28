@@ -18,7 +18,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-dev-key-change-in-pro
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,back-nexus.onrender.com').split(',')
 
 
 # Application definition
@@ -182,11 +182,21 @@ SIMPLE_JWT = {
 # CORS settings
 CORS_ALLOWED_ORIGINS = [
     "https://strathmore-insight-nexus-2024.web.app",
+    "https://harmonicomplex.web.app",
+    "https://harmonicomplex.firebaseapp.com",
     "http://localhost:5173",  # For local development
     "http://localhost:3000",  # Alternative local port
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_METHODS = [
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS',
+]
 CORS_ALLOW_HEADERS = [
     'accept',
     'accept-encoding',
